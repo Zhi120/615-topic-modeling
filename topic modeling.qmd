@@ -35,7 +35,7 @@ head(movie_data)
 ```
 
 ```{r}
-corpus <- Corpus(VectorSource(movie_data$Plot))  # Replace 'plot' with your actual column name
+corpus <- VCorpus(VectorSource(movie_data$Plot))  # Replace 'plot' with actual column name
 
 # Preprocess the text (e.g., remove punctuation, stop words, etc.)
 corpus <- tm_map(corpus, content_transformer(tolower))
@@ -124,6 +124,7 @@ movie_data$cluster <- as.factor(kmeans_result$cluster)
 ```
 
 ```{r}
+library(ggplot2)
 pca <- prcomp(gamma, center = TRUE, scale. = TRUE)
 
 # Extract the first two principal components
@@ -215,8 +216,16 @@ topic1_words <- topic_words %>%
 library(wordcloud)
 library(RColorBrewer)
 
-wordcloud(words = topic1_words$term, freq = topic1_words$beta, min.freq = 1, 
-          max.words = 100, random.order = FALSE, rot.per = 0.35, 
-          colors = brewer.pal(8, "Dark2"))
-
+tryCatch({
+  wordcloud(
+    words = topic1_words$term,
+    freq = topic1_words$beta,
+    min.freq = 0.5,       
+    max.words = 150,      
+    random.order = FALSE,
+    rot.per = 0.2,        
+    scale = c(3, 0.5),    
+    colors = brewer.pal(8, "Dark2")
+  )
+}, warning = function(w) {})
 ```
